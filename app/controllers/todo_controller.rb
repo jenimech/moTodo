@@ -9,7 +9,7 @@ class TodoController < UIViewController
 
   def viewDidLoad
     super
-    puts "******* VIEWDIDLOAD TASKS: #{self.tasks}"
+    puts "******* VIEWDIDLOAD self.TASKS: #{self.tasks}"
     self.title = "ToDo"
     self.view.backgroundColor = UIColor.whiteColor
     @container = UIView.alloc.initWithFrame [[0,0], [self.view.frame.size.width, 150]]
@@ -41,8 +41,9 @@ class TodoController < UIViewController
       @add.enabled = false
       @text_field.enabled = false
 
-      new_task   = Task.create(:title => @text_field.text, :done => false)
-      self.tasks = Task.deserialize_from_file('tasks.dat')
+      new_task   = Task.new(:title => @text_field.text, :done => false)
+      new_task.save
+      #Task.serialize_to_file('tasks.dat')
       @table.reloadData
 
       @add.enabled = true
@@ -55,7 +56,6 @@ class TodoController < UIViewController
 
   def tableView(tableView, cellForRowAtIndexPath:indexPath)
     @reuseIndentifier = "CELL_IDENTIFIER"
-    self.tasks = Task.all
     cell = tableView.dequeueReusableCellWithIdentifier(@reuseIndentifier) || begin
       UITableViewCell.alloc.initWithStyle(UITableViewCellStyleDefault, reuseIdentifier:@reuseIdentifier)
     end
@@ -64,10 +64,7 @@ class TodoController < UIViewController
   end
 
   def tableView(tableView, numberOfRowsInSection: section)
-    # Task.all.count
     puts ">>>> tableView: self.tasks: #{self.tasks}"
-    puts ">>>> tableView: @tasks: #{@tasks}"
-    self.tasks = Task.all
     self.tasks.count
   end
 end
